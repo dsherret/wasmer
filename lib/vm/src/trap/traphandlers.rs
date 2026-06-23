@@ -599,6 +599,9 @@ cfg_if::cfg_if! {
                 } else if #[cfg(target_arch = "x86")] {
                     pc = context.Eip as usize;
                     sp = context.Esp as usize;
+                } else if #[cfg(target_arch = "aarch64")] {
+                    pc = context.Pc as usize;
+                    sp = context.Sp as usize;
                 } else {
                     compile_error!("Unsupported platform");
                 }
@@ -622,6 +625,14 @@ cfg_if::cfg_if! {
                     context.Ebp = ebp;
                     context.Ecx = ecx;
                     context.Edx = edx;
+                } else if #[cfg(target_arch = "aarch64")] {
+                    let TrapHandlerRegs { pc, sp, x0, x1, x29, lr } = regs;
+                    context.Pc = pc;
+                    context.Sp = sp;
+                    context.Anonymous.Anonymous.X0 = x0;
+                    context.Anonymous.Anonymous.X1 = x1;
+                    context.Anonymous.Anonymous.Fp = x29;
+                    context.Anonymous.Anonymous.Lr = lr;
                 } else {
                     compile_error!("Unsupported platform");
                 }
