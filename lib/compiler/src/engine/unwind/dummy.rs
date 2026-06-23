@@ -1,13 +1,16 @@
 //! Module for Dummy unwind registry.
 
-use wasmer_types::CompiledFunctionUnwindInfo;
+use crate::types::unwind::CompiledFunctionUnwindInfoReference;
 
-/// Represents a registry of function unwind information when the host system
-/// support any one in specific.
+/// Represents a registry of function unwind information for hosts that don't
+/// have a specific unwind registration implementation (e.g. aarch64 Windows).
+///
+/// Registration is a no-op: traps are caught by the vectored exception handler
+/// and recovered via longjmp, which does not rely on registered unwind info.
 pub struct DummyUnwindRegistry {}
 
 impl DummyUnwindRegistry {
-    /// Creates a new unwind registry with the given base address.
+    /// Creates a new unwind registry.
     pub fn new() -> Self {
         DummyUnwindRegistry {}
     }
@@ -18,14 +21,14 @@ impl DummyUnwindRegistry {
         _base_address: usize,
         _func_start: u32,
         _func_len: u32,
-        _info: &CompiledFunctionUnwindInfo,
+        _info: &CompiledFunctionUnwindInfoReference,
     ) -> Result<(), String> {
         // Do nothing
         Ok(())
     }
 
     /// Publishes all registered functions.
-    pub fn publish(&mut self, eh_frame: Option<&[u8]>) -> Result<(), String> {
+    pub fn publish_eh_frame(&mut self, _eh_frame: Option<&[u8]>) -> Result<(), String> {
         // Do nothing
         Ok(())
     }
