@@ -606,3 +606,7 @@ required-features = ["cranelift"]
 name = "throw-exception"
 path = "examples/throw_exception.rs"
 required-features = ["llvm"]
+
+# TEMP: use the Windows on ARM support in corosensei before it is released.
+[patch.crates-io]
+corosensei = { git = "https://github.com/dsherret/corosensei", branch = "feat_windows_arm" }
